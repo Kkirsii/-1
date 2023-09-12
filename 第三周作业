@@ -1,0 +1,124 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef struct polynode
+{
+    float coef;  //系数
+    int expn;    //指数
+    struct polynode *next;
+    polynode(float a,int b):coef(a),expn(b),next(nullptr){}
+}polynode,*polylist;
+
+int s=1;
+void poly_create(polylist &L) //多项式链表创建
+{
+    int m;
+    printf("请输入第 %d 个一元多项式项数：",s);
+    scanf("%d",&m);
+    L=(polylist)malloc(sizeof(polynode)); //申请头节点指针
+    polylist p;
+    p=L;
+    for(int i=1;i<=m;i++)
+    {
+        p->next=(polylist)malloc(sizeof(polynode)); //不断申请
+        p=p->next;
+        printf("请输入第 %d 项的系数：",i);
+        scanf("%f",&p->coef);
+        printf("请输入第 %d 项的指数：",i);
+        scanf("%d",&p->expn);
+    }
+    p->next=NULL;
+}
+
+void display(polylist L) //打印多项式
+{
+    polylist p;
+    p=L->next;
+	if(!p){cout<<0;return;}
+    printf("%.0fx(%d)",p->coef,p->expn);
+    p=p->next;
+    while(p!=NULL)
+    {
+        if(p->coef>0)
+        {
+            printf("+%.0fx(%d)",p->coef,p->expn);
+        }
+        else
+        {
+            printf("%.0fx(%d)",p->coef,p->expn);
+        }
+        p=p->next;
+    }
+    printf("\n");
+}
+
+void add(polylist La, polylist Lb, polylist &Lc)
+{
+	Lc=(polylist)malloc(sizeof(polynode));
+	Lc->next=nullptr;
+	La=La->next;
+    unordered_map<int,int>mp;
+	while(La)
+	{
+		mp[La->expn]+=La->coef;
+		La=La->next;
+	}
+	Lb=Lb->next;
+	while(Lb)
+	{
+		mp[Lb->expn]+=Lb->coef;
+		Lb=Lb->next;
+	}
+	
+	for(auto it=mp.begin();it!=mp.end();it++)
+	{
+		cout<<it->first<<"  "<<it->second<<" "<<endl;
+	}
+	cout<<endl;
+	 
+}
+
+void subtract(polylist La,polylist Lb,polylist &Lc)
+{
+   Lc=(polylist)malloc(sizeof(polynode));
+   Lc->next=nullptr;
+   La=La->next;
+   unordered_map<int,int>mp;
+   while(La)
+   {
+	   mp[La->expn]+=La->coef;
+	   La=La->next;
+   }
+   Lb=Lb->next;
+   while(Lb)
+   {
+	   mp[Lb->expn]-=Lb->coef;
+	   Lb=Lb->next;
+   }
+   
+   for(auto it=mp.begin();it!=mp.end();it++)
+   {
+	   cout<<it->first<<"  "<<it->second<<" "<<endl;
+   }
+   cout<<endl;
+   
+}
+int main()
+{
+    polylist La,Lb,Lc,Ld;
+    poly_create(La);
+    s++;
+    poly_create(Lb);
+    printf("一元多项式1：");
+    display(La);
+    printf("一元多项式2：");
+    display(Lb);
+    add(La,Lb,Lc);
+    
+    printf("加的结果：");
+    display(Lc);
+    subtract(La,Lb,Ld);
+    printf("减的结果: ");
+    display(Ld);
+    return 0;
+}
